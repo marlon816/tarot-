@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcular Arcano Pessoal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #dfe6e9;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .result img {
+            max-width: 500px;
+            margin: 30px 300px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Calcule seu Arcano Pessoal</h1>
+    
+    <label for="dia">Dia de nascimento:</label>
+    <input type="number" id="dia" placeholder="Ex: 27" min="1" max="31"><br>
+    
+    <label for="mes">Mês de nascimento:</label>
+    <input type="number" id="mes" placeholder="Ex: 05" min="1" max="12"><br>
+    
+    <label for="ano">Ano de nascimento:</label>
+    <input type="number" id="ano" placeholder="Ex: 1984" min="1" max=""><br>
+    
+    <button onclick="calcularArcano()">Calcular Arcano Pessoal</button>
+
+    <div class="result" id="resultado"></div>
+
+    <script>
+        function calcularArcano() {
+            const dia = parseInt(document.getElementById('dia').value);
+            const mes = parseInt(document.getElementById('mes').value);
+            const ano = parseInt(document.getElementById('ano').value);
+
+            if (!dia || !mes || !ano || dia < 1 || dia > 31 || mes < 1 || mes > 12 || ano < 1 || ano > 10000000000000000000000000000000) {
+                document.getElementById('resultado').innerText = "Por favor, insira uma data válida.";
+                return;
+            }
+
+            // Passo 1: Soma os dígitos de dia, mês e ano
+            let somaTotal = somarDigitos(dia) + somarDigitos(mes) + somarDigitos(ano);
+
+            // Passo 2: Reduzir o número até obter algo entre 1 e 22
+            let arcano = reduzirNumero(somaTotal);
+
+            // Lista de arcanos com número, nome e significado
+            const arcanos = [
+                { numero: "1", romano: "I", nome: "O Mago", imagem: "o mago.png", significado: `<div class="card-section">
+        <h1>Descrição visual e simbologia de O Mago</h1>
+        <p>O Mago é uma carta rica em símbolos que indicam poder, manifestação e conexão entre o espírito e a matéria. Sua imagem geralmente mostra um jovem com um símbolo do infinito pairando acima de sua cabeça, representando a eternidade e o potencial infinito. Ele está em pé atrás de uma mesa, com quatro objetos sobre ela: uma varinha (representando o naipe de paus), uma taça (copas), uma espada (espadas) e uma moeda (pentáculos). Esses objetos simbolizam os quatro elementos e os naipes dos Arcanos Menores.</p>
+        
+        <p>Sua posição de mãos também é significativa: a mão direita ergue a varinha em direção ao céu (representando o espírito e a conexão com o divino), enquanto a mão esquerda aponta para a terra, sugerindo sua capacidade de trazer o espiritual ao plano físico. Ele está cercado por videiras de rosas vermelhas e lírios brancos, que são símbolos de paixão e pureza, respectivamente. O fundo amarelo transmite otimismo, iluminação e clareza. Sua túnica branca simboliza pureza e pensamento abstrato, enquanto o manto vermelho representa desejo e paixão. A serpente ao redor de sua cintura é outro símbolo da eternidade.</p>
+    </div>
+
+    <div class="card-section">
+        <h2>Palavras-chave de O Mago</h2>
+        <ul>
+            <li><span class="key-words">Palavras-chave:</span> Manifestação, desenvoltura, poder, ação inspirada.</li>
+            <li><span class="key-words">Palavras-chave invertida:</span> Manipulação, mau planejamento, talentos inexplorados.</li>
+        </ul>
+    </div>
+
+    <div class="card-section">
+        <h2>Significado do Mago</h2>
+        <h3>Posição Vertical</h3>
+        <p>O Mago em sua posição vertical indica habilidade, desenvoltura e capacidade de manifestar desejos através de ação inspirada. Ele é um símbolo de força de vontade e criatividade, um mestre em transformar o que é imaginado em realidade.</p>
+        
+        <h3>Amor e Relacionamentos</h3>
+        <p>Para solteiros, o Mago é um convite a ser proativo e confiar em suas habilidades para conquistar. Em relacionamentos estabelecidos, sugere trazer renovação e diversão ao relacionamento, quebrando a rotina com novas experiências.</p>
+
+        <h3>Dinheiro e Trabalho</h3>
+        <p>O Mago sinaliza que você possui todos os recursos para alcançar seus objetivos, especialmente em uma carreira ou empreendimento. Para quem busca emprego, ele indica oportunidades e ofertas à vista. Em termos financeiros, o Mago sugere que é possível aumentar a renda com suas habilidades e intuição, mas alerta para não ser descuidado.</p>
+
+        <h3>Saúde e Espiritualidade</h3>
+        <p>Em termos de saúde, o Mago indica boa saúde física e mental, mas sugere buscar melhorias ativamente. Espiritualmente, ele encoraja a conexão com sua intuição e poder interior, sendo um bom momento para praticar meditação e autoconhecimento.</p>
+    </div>
+
+    <div class="card-section">
+        <h2>O Mago invertido</h2>
+        <p>Na posição invertida, O Mago sugere que você pode estar sendo enganado ou manipulando situações de maneira inadequada. Isso também pode indicar que talentos não explorados estão impedindo seu progresso, ou que há falta de planejamento em um projeto. Quando se trata de saúde ou espiritualidade, a carta invertida pede ação proativa, seja buscando ajuda ou explorando seu caminho espiritual.</p>
+    </div>
+
+    <div class="card-section">
+        <h2>Significado de O Mago em perguntas Sim ou Não</h2>
+        <p>O Mago é uma carta de ação e confiança em suas habilidades, portanto, em uma leitura de Sim ou Não, a resposta seria sim, indicando que você está pronto para manifestar seu desejo com sucesso.</p>
+    </div>
+
+    <div class="card-section">
+        <h2>Combinações com outras cartas</h2>
+        <ul>
+            <li><strong>O Mago e A Torre:</strong> Uma mudança repentina ou destrutiva é abordada com confiança e habilidade, sugerindo que, mesmo em momentos difíceis, você tem o poder de superar os desafios.</li>
+            <li><strong>O Mago e A Temperança:</strong> Equilíbrio e inspiração se unem, sugerindo que você pode aplicar suas habilidades para harmonizar sua vida.</li>
+            <li><strong>O Mago e Os Amantes:</strong> Em relacionamentos, esta combinação enfatiza a necessidade de ser proativo e tomar as rédeas para buscar a união ou amor genuíno.</li>
+            <li><strong>O Mago e O Hierofante:</strong> Uma combinação de influência e liderança, sugerindo que sua habilidade de inspirar pode ser aplicada a ensinar e guiar os outros.</li>
+            <li><strong>O Mago e O Eremita:</strong> Um equilíbrio entre introspecção e ação, com o Eremita incentivando o Mago a buscar momentos de reflexão.</li>
+        </ul>
+    </div>
+
+    <div class="card-section">
+        <h2>Associações com o Mago</h2>
+        <ul>
+            <li><strong>Elemento:</strong> Ar</li>
+            <li><strong>Planeta:</strong> Mercúrio</li>
+            <li><strong>Signo astrológico:</strong> Áries</li>
+            <li><strong>Pedra:</strong> Ágata</li>
+            <li><strong>Sim / Não:</strong> Sim</li>
+        </ul>
+    </div>`},
+                { numero: "2", romano: "II", nome: "A Sacerdotisa", imagem: "A sacerdotiza.png", significado: `<h1>A Sacerdotisa - Significado no Tarot</h1>
+
+    <h2>Descrição Visual e Simbologia</h2>
+    <p><strong>A mulher coroada:</strong> Sentada entre dois pilares, a Sacerdotisa usa um manto azul, simbolizando o conhecimento divino e a serenidade espiritual.</p>
+    <p><strong>Os pilares "J" e "B":</strong> Representam Jachin e Boaz, que simbolizam os pilares do Templo de Salomão. Jachin (branco) é associado ao estabelecimento, e Boaz (preto), à força, simbolizando a dualidade e o equilíbrio.</p>
+    <p><strong>O véu azul:</strong> Atrás da Sacerdotisa, há um véu fino decorado com romãs, que representam fertilidade, beleza e vida eterna.</p>
+    <p><strong>O pergaminho "Tora":</strong> Simboliza o conhecimento sagrado e oculto, parcialmente revelado, mostrando que o saber espiritual nem sempre é acessível facilmente.</p>
+    <p><strong>A cruz no peito:</strong> Representa os quatro aspectos da percepção — corpo, coração, mente e espírito — simbolizando equilíbrio entre esses elementos.</p>
+    <p><strong>A lua crescente aos seus pés:</strong> Simboliza as mudanças das fases da lua e a conexão da Sacerdotisa com o feminino e a mente subconsciente.</p>
+
+    <h2>Palavras-chave</h2>
+    <ul>
+        <li><strong>Na posição normal:</strong> Intuição, conhecimento divino, energia feminina, segredos, mistério, inconsciente, espiritualidade.</li>
+        <li><strong>Invertida:</strong> Repressão de emoções, segredos ainda a serem revelados, superficialidade, falta de conexão espiritual.</li>
+    </ul>
+
+    <h2>Interpretação em diferentes áreas</h2>
+
+    <h3>Amor e Relacionamento</h3>
+    <p><strong>Na posição normal:</strong> Sugere introspecção e conexão espiritual no relacionamento, além de equilíbrio entre as energias masculina e feminina.</p>
+    <p><strong>Invertida:</strong> Alerta para falta de comunicação e repressão emocional, sugerindo a necessidade de honestidade.</p>
+
+    <h3>Dinheiro e Trabalho</h3>
+    <p><strong>Na posição normal:</strong> Indica necessidade de educação e desenvolvimento, com oportunidades inesperadas surgindo.</p>
+    <p><strong>Invertida:</strong> Sugere que fofocas e segredos podem estar circulando no ambiente de trabalho, e alerta para desonestidade em questões financeiras.</p>
+
+    <h3>Saúde e Espiritualidade</h3>
+    <p><strong>Na posição normal:</strong> Indica a importância de cuidar da saúde mental e física, confiando em sua intuição.</p>
+    <p><strong>Invertida:</strong> Sinaliza que você pode estar desconectado de sua intuição e negligenciando sinais importantes do corpo.</p>
+
+    <h2>Sim ou Não</h2>
+    <p>A Sacerdotisa não oferece uma resposta definitiva, pois sua natureza é misteriosa. A resposta tende a ser um "talvez", sugerindo reflexão e espera por mais clareza.</p>
+
+    <h2>Combinações importantes</h2>
+    <ul>
+        <li><strong>Com A Justiça:</strong> Sinal de equilíbrio entre intuição e lógica nas decisões.</li>
+        <li><strong>Com Os Amantes:</strong> Sugere uma conexão entre emoções profundas e a necessidade de introspecção antes de tomar decisões amorosas.</li>
+        <li><strong>Com A Torre:</strong> Uma combinação que alerta para pausas antes de enfrentar mudanças bruscas, sugerindo reflexão interior.</li>
+        <li><strong>Com O Mago:</strong> Contraste entre o carisma do Mago e o conhecimento profundo da Sacerdotisa, representando um equilíbrio entre ação e introspecção.</li>
+    </ul>`},
+                { numero: "3", romano: "III", nome: "A Imperatriz", imagem: "A imperatriz.png", significado: ` <h1>A Imperatriz - Significado</h1>
+    <div class="section">
+        <h2>Feminilidade</h2>
+        <p>A Imperatriz simboliza a feminilidade, a criatividade e a energia materna. Sua presença no tarot evoca equilíbrio, sensualidade, fertilidade e nutrição emocional.</p>
+
+        <h3>Palavras-chave:</h3>
+        <ul>
+            <li>Feminilidade</li>
+            <li>Sensualidade</li>
+            <li>Fertilidade</li>
+            <li>Criatividade</li>
+            <li>Emoções</li>
+            <li>Equilíbrio</li>
+            <li>Energia materna</li>
+            <li>Nascimento metafórico</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Amor e Relacionamento</h2>
+        <p>No campo do amor, A Imperatriz traz confiança, atração e profundidade emocional. Sua energia feminina favorece romance e uma maternidade saudável.</p>
+        <ul>
+            <li>Energia feminina</li>
+            <li>Confiança</li>
+            <li>Atração</li>
+            <li>Profundidade emocional</li>
+            <li>Romance</li>
+            <li>Maternidade</li>
+            <li>Emoções equilibradas</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Dinheiro e Trabalho</h2>
+        <p>A Imperatriz sinaliza sucesso em novos projetos e negócios. Ela representa criatividade e oportunidades financeiras, além de destacar o ensino e o compartilhamento de habilidades.</p>
+        <ul>
+            <li>Criatividade</li>
+            <li>Novos projetos</li>
+            <li>Negócios</li>
+            <li>Iniciativas bem-sucedidas</li>
+            <li>Oportunidades financeiras</li>
+            <li>Ensino e compartilhamento de habilidades</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Saúde e Espiritualidade</h2>
+        <p>No âmbito da saúde, A Imperatriz está associada à intuição, à conexão com a natureza e ao equilíbrio entre corpo e mente. Ela sugere cuidados com a saúde emocional e espiritualidade criativa.</p>
+        <ul>
+            <li>Intuição</li>
+            <li>Cuidados com o corpo e mente</li>
+            <li>Conexão com a natureza</li>
+            <li>Espiritualidade</li>
+            <li>Criatividade</li>
+            <li>Nutrição emocional</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>A Imperatriz Invertida</h2>
+        <p>Quando invertida, A Imperatriz representa desconexão com o lado feminino, inseguranças e desequilíbrio emocional. Ela indica superproteção e negligência pessoal.</p>
+
+        <h3>Aspectos Invertidos:</h3>
+        <ul>
+            <li>Desconexão com o lado feminino</li>
+            <li>Inseguranças</li>
+            <li>Desequilíbrio entre energias masculinas e femininas</li>
+            <li>Negligência de si mesmo</li>
+            <li>Superproteção</li>
+            <li>Dependência emocional</li>
+        </ul>
+
+        <h3>Amor e Relacionamento Invertido:</h3>
+        <ul>
+            <li>Excesso de emoções</li>
+            <li>Relacionamento desequilibrado</li>
+            <li>Superproteção</li>
+            <li>Dependência excessiva</li>
+            <li>Insegurança em se abrir para o amor</li>
+        </ul>
+
+        <h3>Dinheiro e Trabalho Invertido:</h3>
+        <ul>
+            <li>Bloqueios criativos</li>
+            <li>Insegurança profissional</li>
+            <li>Tédio no trabalho</li>
+            <li>Dúvidas sobre a carreira</li>
+            <li>Satisfação financeira neutra</li>
+        </ul>
+
+        <h3>Saúde e Espiritualidade Invertido:</h3>
+        <ul>
+            <li>Falta de conexão com a intuição</li>
+            <li>Necessidade de descanso</li>
+            <li>Dúvidas espirituais</li>
+            <li>Desconexão com o corpo</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>A Imperatriz Sim ou Não</h2>
+        <p>Quando A Imperatriz aparece em uma leitura de Sim ou Não, a resposta geralmente é <strong>Sim</strong>.</p>
+    </div>
+
+    <div class="section">
+        <h2>Combinações com A Imperatriz</h2>
+        <ul>
+            <li><strong>A Imperatriz e O Imperador:</strong> Equilíbrio entre energias femininas e masculinas, harmonia, sinergia.</li>
+            <li><strong>A Imperatriz e O Julgamento:</strong> Autorreflexão, questões maternas, novos começos.</li>
+            <li><strong>A Imperatriz e O Mago:</strong> Manifestação de ideias, sucesso, criatividade.</li>
+            <li><strong>A Imperatriz e A Sacerdotisa:</strong> Amizade, empoderamento feminino, intuição.</li>
+            <li><strong>A Imperatriz e A Temperança:</strong> Equilíbrio, moderação, harmonia emocional.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Associações</h2>
+        <ul>
+            <li><strong>Elemento:</strong> Terra</li>
+            <li><strong>Planeta:</strong> Vênus</li>
+            <li><strong>Signo:</strong> Libra</li>
+            <li><strong>Pedra:</strong> Esmeralda, Turquesa</li>
+            <li><strong>Datas importantes:</strong> Outono</li>
+            <li><strong>Cabala:</strong> 14º Binah-Chokmak</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>A Imperatriz como Tipos de Personalidade</h2>
+        <ul>
+            <li>Mãe</li>
+            <li>Gentil</li>
+            <li>Amorosa</li>
+            <li>Protetora</li>
+            <li>Criativa</li>
+            <li>Feminina</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>A Imperatriz como Sentimentos</h2>
+        <ul>
+            <li>Beleza</li>
+            <li>Calor</li>
+            <li>Fertilidade</li>
+            <li>Nutrição</li>
+            <li>Instinto maternal</li>
+            <li>Criação</li>
+        </ul>
+    </div>`},
+                { numero: "4", romano: "IV", nome: "O Imperador", imagem: "o imperador.png", significado:`<h1>Descrição Visual e Simbologia do Imperador</h1>
+    <p>O Imperador está sentado em um grande trono de pedra, decorado com quatro cabeças de carneiro, associadas a Áries e ao planeta Marte, que simbolizam coragem, determinação e liderança.</p>
+    <p>Ele usa uma coroa, representando sua autoridade e poder, e um manto vermelho, que traz a ideia de paixão e energia vital.</p>
+    <p>O Imperador segura dois objetos:</p>
+    <ul>
+        <li>Um globo (ou orbe) em sua mão direita, que representa o domínio sobre o reino e a responsabilidade.</li>
+        <li>Um ankh (símbolo egípcio da vida) na mão esquerda, refletindo seu direito divino de governar e proteger.</li>
+    </ul>
+    <p>Sua barba branca sugere sabedoria e experiência que vêm com a idade.</p>
+    <p>O trono é sólido e imponente, refletindo sua poderosa estabilidade. Ao fundo, há montanhas, um símbolo de resistência, força e superação de obstáculos.</p>
+
+    <h2>Palavras-chave do Imperador</h2>
+    <p><strong>Normal:</strong> Controle, autoridade, foco, disciplina, estrutura, proteção.</p>
+    <p><strong>Invertida:</strong> Tirano, dominador, rígido, teimoso, falta de disciplina.</p>
+
+    <h2>Significados em Diferentes Áreas</h2>
+
+    <h3>Amor e Relacionamento</h3>
+    <p><strong>Posição normal:</strong> Representa um amor duradouro e sólido, baseado em compromisso e respeito. Pode indicar também um relacionamento tradicional, onde alguém assume o papel de provedor.</p>
+    <p><strong>Invertida:</strong> Indica um desequilíbrio de poder, com possível controle excessivo ou comportamentos autoritários. Pode sugerir uma relação dominadora que precisa ser abordada.</p>
+
+    <h3>Dinheiro e Trabalho</h3>
+    <p><strong>Posição normal:</strong> O Imperador traz sucesso, mas exige trabalho árduo, estrutura e organização. Ele aconselha a disciplina financeira, estabelecendo orçamentos e controlando gastos.</p>
+    <p><strong>Invertida:</strong> Sinaliza falta de controle e disciplina financeira. Pode indicar dificuldade em cumprir responsabilidades no trabalho e gestão financeira desorganizada.</p>
+
+    <h3>Saúde e Espiritualidade</h3>
+    <p><strong>Posição normal:</strong> O Imperador sugere a necessidade de equilíbrio, e que você deve cuidar do corpo com a mesma disciplina que aplica aos outros aspectos da vida.</p>
+    <p><strong>Invertida:</strong> Indica que você pode estar sendo excessivamente rígido com seu corpo e saúde, o que pode levar a problemas. Sinaliza que é hora de desacelerar e consultar um profissional, se necessário.</p>
+
+    <h2>Significado do Imperador Invertido</h2>
+    <p><strong>Poder e controle excessivos:</strong> Quando invertido, o Imperador alerta para problemas com abuso de autoridade, falta de disciplina ou o risco de ser muito rígido e controlador, prejudicando relações e a própria saúde.</p>
+    <p>Ele pode indicar que a estratégia estruturada já não está funcionando, resultando em emoções descontroladas ou incompetência na gestão de situações.</p>
+
+    <h2>Combinações Importantes</h2>
+    <h3>O Imperador e O Sol</h3>
+    <p>Ambas as cartas indicam sucesso, mas com abordagens diferentes. O Sol traz sorte e alegria, enquanto o Imperador foca em trabalho árduo e planejamento estratégico.</p>
+
+    <h3>O Imperador e A Morte</h3>
+    <p>A Morte traz transformação, e o Imperador, com sua estabilidade, pode ser a força que ajuda a lidar com mudanças inesperadas.</p>
+
+    <h3>O Imperador e A Temperança</h3>
+    <p>Uma combinação que sugere a importância de manter o equilíbrio, apesar da autoridade e da disciplina do Imperador.</p>
+
+    <h2>Elemento, Astrologia e Outras Associações</h2>
+    <p><strong>Elemento:</strong> Fogo</p>
+    <p><strong>Planeta:</strong> Marte</p>
+    <p><strong>Signo Astrológico:</strong> Áries</p>
+    <p><strong>Pedra:</strong> Rubi</p>
+    <p><strong>Sim / Não:</strong> Sim (quando você aplicar disciplina e estratégia)</p>
+
+    <h2>O Imperador como Tipo de Personalidade</h2>
+    <p>A carta pode indicar uma pessoa assertiva, corajosa e focada, com uma forte necessidade de controle e liderança. Embora eficaz, ela pode ser um pouco rígida, dominadora e ter dificuldade em expressar emoções.</p>
+
+    <h2>O Imperador e os Sentimentos</h2>
+    <p>Ele representa uma abordagem racional para as emoções, colocando lógica e razão acima de sentimentos. Quando surge, pode sugerir que você ou a pessoa envolvida não está priorizando os sentimentos, mas sim a estabilidade e o controle.</p>
+`},
+        { numero: "5", romano: "V", nome: "O Hierofante", imagem: "o papa.png", significado: `<h1>Descrição Visual e Simbologia do Hierofante</h1>
+    
+    <h2>Figura religiosa</h2>
+    <p>O Hierofante é retratado como uma figura de autoridade espiritual, geralmente vestindo tons simbólicos como azul, vermelho e branco. O azul representa o mundo consciente, o vermelho se conecta ao subconsciente, e o branco está associado ao superconsciente, sugerindo uma sabedoria que transcende a mente superficial.</p>
+
+    <h2>Ambiente formal</h2>
+    <p>Frequentemente, ele está em um espaço que remete a um templo ou igreja, refletindo sua ligação com instituições religiosas ou educacionais tradicionais.</p>
+
+    <h2>Mãos e gestos</h2>
+    <p>Sua mão direita está levantada com três dedos apontando para o céu e dois para a terra, um gesto de bênção que indica a interconexão entre o espiritual e o material. A mão esquerda segura uma cruz tripla, simbolizando sua autoridade religiosa.</p>
+
+    <h2>Chaves cruzadas</h2>
+    <p>A chave sob seus pés, em forma de cruz, representa o poder de desbloquear os mistérios espirituais e secretos, reforçando sua função como guardião do conhecimento sagrado.</p>
+
+    <h1>Palavras-chave do Hierofante</h1>
+    <h2>Palavras-chave</h2>
+    <ul>
+        <li>Autoridade</li>
+        <li>Tradição</li>
+        <li>Espiritualidade</li>
+        <li>Educação</li>
+        <li>Valores convencionais</li>
+        <li>Conformidade</li>
+    </ul>
+
+    <h2>Invertido</h2>
+    <ul>
+        <li>Rebelião</li>
+        <li>Não-conformismo</li>
+        <li>Novos métodos</li>
+        <li>Ignorância</li>
+        <li>Afastamento das tradições</li>
+    </ul>
+
+    <h1>Significados do Hierofante nas Áreas da Vida</h1>
+
+    <h2>Amor e Relacionamentos</h2>
+    <p>O Hierofante fala de relações tradicionais e estruturadas, como casamento. Para casais, indica o fortalecimento do vínculo por meio de valores compartilhados. Para solteiros, pode sugerir explorar relacionamentos baseados em valores familiares ou espirituais.</p>
+
+    <h2>Carreira e Dinheiro</h2>
+    <p>Ele indica que seguir métodos tradicionais pode ser mais vantajoso para o sucesso. A carta também sugere que um mentor experiente pode ser fundamental para o progresso profissional. Em finanças, ela alerta para investimentos seguros e construção de estabilidade.</p>
+
+    <h2>Saúde e Espiritualidade</h2>
+    <p>No campo da saúde, o Hierofante sugere seguir práticas tradicionais de cuidado pessoal, como alimentação balanceada e exercícios. Espiritualmente, ele encoraja a reconexão com práticas estabelecidas, além de buscar orientação de um mentor espiritual.</p>
+
+    <h1>Hierofante Invertido</h1>
+    <p>Quando invertido, o Hierofante representa uma ruptura com as convenções estabelecidas e um convite para seguir um caminho próprio. Ele pode indicar resistência ao conformismo, a busca por novos métodos ou até a frustração com as estruturas tradicionais.</p>
+
+    <h2>Amor</h2>
+    <p>Pode sugerir estagnação no relacionamento, com valores que já não se alinham. Para solteiros, indica que explorar caminhos não convencionais pode trazer mais satisfação.</p>
+
+    <h2>Carreira</h2>
+    <p>O Hierofante invertido pode simbolizar insatisfação com a estrutura profissional tradicional, desejando mais liberdade criativa ou mudanças no ambiente de trabalho.</p>
+
+    <h2>Saúde e Espiritualidade</h2>
+    <p>Ele pode indicar a necessidade de abandonar velhos hábitos ou práticas espirituais que já não funcionam, incentivando uma abordagem mais personalizada e flexível.</p>
+
+    <h1>Combinando o Hierofante com Outras Cartas</h1>
+
+    <h2>A Sacerdotisa e o Hierofante</h2>
+    <p>Juntas, essas cartas equilibram sabedoria intuitiva e tradicional. O Hierofante representa o estudo formal, enquanto a Sacerdotisa traz a sabedoria interior.</p>
+
+    <h2>Rei de Paus e Hierofante</h2>
+    <p>Combina liderança tradicional com visão inovadora. Sugerindo que você busque orientação de uma figura experiente para alcançar seus objetivos espirituais ou profissionais.</p>
+
+    <h2>Os Amantes e Hierofante</h2>
+    <p>Um relacionamento baseado em valores duradouros e compromissos formais, como o casamento ou união legalizada.</p>` },
+                { numero: "6", romano: "VI", nome: "Os Enamorados", imagem: "os enamorados.png", significado: "Representa amor, harmonia e decisões importantes.", link: "https://www.exemplo.com/os-enamorados" },
+                { numero: "7", romano: "VII", nome: "O Carro", imagem: "o carro.png", significado: "Indica controle, vitória e superação de obstáculos.", link: "https://www.exemplo.com/o-carro" },
+                { numero: "8", romano: "VIII", nome: "A Justiça", imagem: "A justica.png", significado: "Simboliza equilíbrio, verdade e justiça.", link: "https://www.exemplo.com/a-justica" },
+                { numero: "9", romano: "IX", nome: "O Eremita", imagem: "o eremita.png", significado: "Fala sobre introspecção, busca por sabedoria e isolamento.", link: "https://www.exemplo.com/o-eremita" },
+                { numero: "10", romano: "X", nome: "A Roda da Fortuna", imagem: "Roda da fortuna.png", significado: "Indica mudanças, ciclos e destino.", link: "https://www.exemplo.com/a-roda-da-fortuna" },
+                { numero: "11", romano: "XI", nome: "A Força", imagem: "A forca.png", significado: "Representa coragem, autodomínio e força interior.", link: "https://www.exemplo.com/a-forca" },
+                { numero: "12", romano: "XII", nome: "O Enforcado", imagem: "o enforcado.png", significado: "Simboliza sacrifício, introspecção e uma nova perspectiva.", link: "cartas/enforcado.html" },
+                { numero: "13", romano: "XIII", nome: "A Morte", imagem: "A morte.png", significado: "Fala sobre transformação, fim de ciclos e renovação.", link: "https://www.exemplo.com/a-morte" },
+                { numero: "14", romano: "XIV", nome: "A Temperança", imagem: "A temperanca.png", significado: "Indica equilíbrio, moderação e harmonia.", link: "https://www.exemplo.com/a-temperanca" },
+                { numero: "15", romano: "XV", nome: "O Diabo", imagem: "o diabo.png", significado: "Representa tentações, materialismo e excessos.", link: "https://www.exemplo.com/o-diabo" },
+                { numero: "16", romano: "XVI", nome: "A Torre", imagem: "A torre.png", significado: "Simboliza mudança súbita, revelações e rupturas.", link: "https://www.exemplo.com/a-torre" },
+                { numero: "17", romano: "XVII", nome: "A Estrela", imagem: "A estrela.png", significado: "Fala sobre esperança, inspiração e renovação espiritual.", link: "https://www.exemplo.com/a-estrela" },
+                { numero: "18", romano: "XVIII", nome: "A Lua", imagem: "A lua.png", significado: "Indica mistério, ilusões e o inconsciente.", link: "https://www.exemplo.com/a-lua" },
+                { numero: "19", romano: "XIX", nome: "O Sol", imagem:"o sol.png", significado: "Representa sucesso, clareza e vitalidade.", link: "https://www.exemplo.com/o-sol" },
+                { numero: "20", romano: "XX", nome: "O Julgamento", imagem: "o julgamento.png", significado: "Simboliza renascimento, julgamento e reflexão.", link: "https://www.exemplo.com/o-julgamento" },
+                { numero: "21", romano: "XXI", nome: "O Mundo", imagem: "o mundo.png", significado: "Indica realização, completude e harmonia.", link: "https://www.exemplo.com/o-mundo" },
+                { numero: "22", romano: "XXII", nome: "O Louco", imagem: "o louco.png", significado: "Representa novos começos, liberdade e espontaneidade.", link: "https://www.exemplo.com/o-louco" },
+            ];
+
+            const arcanoEscolhido = arcanos[arcano-1]; // Pegando o arcano correto (0-index)
+
+            const resultadoTexto = `
+               <strong> Seu Arcano Pessoal é o Arcano ${arcanoEscolhido.numero} (${arcanoEscolhido.romano}): ${arcanoEscolhido.nome}.</strong><br>
+                <img src="${arcanoEscolhido.imagem}" alt="${arcanoEscolhido.nome}"><br>
+                <strong>significado da carta:</strong> ${arcanoEscolhido.significado}<br>
+            `;
+
+            document.getElementById('resultado').innerHTML = resultadoTexto;
+        }
+        
+
+        // Função para somar os dígitos de um número
+        function somarDigitos(numero) {
+            return numero.toString().split('').reduce((acc, digito) => acc + parseInt(digito), 0);
+        }
+
+        // Função para reduzir o número até que fique entre 1 e 22
+        function reduzirNumero(numero) {
+            while (numero > 22) {
+                numero = somarDigitos(numero);
+            }
+            return numero;
+        }
+    </script>
+
+</body>
+</html>
